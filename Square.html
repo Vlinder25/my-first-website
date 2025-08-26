@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spinning Square Demo</title>
+  <style>
+    /* --- Simple styles to center things and make it look nice --- */
+    :root { 
+      --size: 120px;     /* square size */
+      --speed: 2s;       /* rotation duration */
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 100svh;
+    }
+
+    .square {
+      width: var(--size);
+      height: var(--size);
+      background: #007bff;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+      /* The magic line: run the `spin` animation forever */
+      animation: spin var(--speed) linear infinite;
+    }
+
+    /* Define the animation: rotate from 0 to 1 full turn */
+    @keyframes spin {
+      from { transform: rotate(0turn); }
+      to   { transform: rotate(1turn); }
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    }
+
+    label { font-size: .95rem; display: inline-flex; align-items: center; gap: 8px; }
+    input[type="range"] { width: 200px; }
+
+    /* Respect users who prefer less motion */
+    @media (prefers-reduced-motion: reduce) {
+      .square { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- The thing that spins -->
+  <div class="square" id="box" aria-label="Spinning square"></div>
+
+  <!-- Tiny controls so you can play with it -->
+  <div class="controls">
+    <button id="toggle">Pause</button>
+
+    <label for="speed">
+      Speed
+      <input id="speed" type="range" min="0.5" max="5" step="0.5" value="2" />
+      <span id="speedValue">2s</span>
+    </label>
+  </div>
+
+  <script>
+    // Pause/Play button toggles the CSS animation's play state
+    const box = document.getElementById('box');
+    const toggle = document.getElementById('toggle');
+    const speed = document.getElementById('speed');
+    const speedValue = document.getElementById('speedValue');
+
+    toggle.addEventListener('click', () => {
+      const paused = box.style.animationPlayState === 'paused';
+      if (paused) {
+        box.style.animationPlayState = 'running';
+        toggle.textContent = 'Pause';
+      } else {
+        box.style.animationPlayState = 'paused';
+        toggle.textContent = 'Play';
+      }
+    });
+
+    // The range input changes the CSS variable that controls speed
+    speed.addEventListener('input', () => {
+      const s = speed.value;
+      document.documentElement.style.setProperty('--speed', s + 's');
+      speedValue.textContent = s + 's';
+    });
+  </script>
+</body>
+</html>
